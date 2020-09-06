@@ -2,7 +2,7 @@
 FROM golang:1.15.0-alpine AS builder
 
 RUN apk update && apk upgrade && \
-    apk add --no-cache git-2.26.2-r0 build-base=0.5-r2 && \
+    apk add --no-cache git && \
     rm -rf /var/lib/apt/lists/* 
 
 RUN go get github.com/google/go-jsonnet/cmd/jsonnet
@@ -17,7 +17,7 @@ FROM alpine:3.12
 WORKDIR /dashboards
 
 COPY --from=builder /go/vendor vendor
-COPY --from=builder /go/jsonnet/jsonnet /usr/local/bin/
+COPY --from=builder /go/bin/jsonnet /usr/local/bin/
 
 ENV JSONNET_PATH=/dashboards/vendor
 CMD [ "jsonnet", "-" ]
